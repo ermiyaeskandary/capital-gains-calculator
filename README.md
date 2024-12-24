@@ -3,7 +3,12 @@
 
 # UK capital gains calculator
 
-Calculate capital gains tax by transaction history exported from Charles Schwab, Trading 212 and Morgan Stanley. Generate PDF report with calculations.
+Calculate capital gains tax from transaction history exports and generate a PDF report with calculations.
+
+Currently supported brokers:
+- Charles Schwab
+- Trading 212
+- Morgan Stanley
 
 Automatically convert all prices to GBP and apply HMRC rules to calculate capital gains tax: "same day" rule, "bed and breakfast" rule, section 104 holding.
 
@@ -66,47 +71,61 @@ and when you're done, simply exit the shell. You will be dropped back into the s
 
 ## Usage
 
-You will need several input files:
+### Schwab
 
--   Exported transaction history from Schwab in CSV format since the beginning.
-    Or at least since you first acquired the shares, which you were holding during the tax year. Schwab only allows to download transaction for the last 4 years so keep it safe. After that you may need to restore transactions from PDF statements.
-    [See example](https://github.com/KapJI/capital-gains-calculator/blob/main/tests/test_data/schwab_transactions.csv).
--   Exported transaction history from Schwab Equity Awards (e.g. for Alphabet/Google employees) since the beginning (Note: Schwab now allows for the whole history of Equity Awards account transactions to be downloaded). These are to be downloaded in JSON format. Instructions are available at the top of the [parser file](../main/cgt_calc/parsers/schwab_equity_award_json.py).
--   Exported transaction history from Trading 212.
-    You can use several files here since Trading 212 limit the statements to 1 year periods.
-    [See example](https://github.com/KapJI/capital-gains-calculator/tree/main/tests/test_data/trading212).
--   Exported transaction history from Morgan Stanley.
-    Since Morgan Stanley generates multiple files in a single report, please specify a directory produced from the report download page.
--   Exported transaction history from Sharesight
-    Sharesight is a portfolio tracking tool with support for multiple brokers.
+1. **Exported transaction history from Schwab**:
+   - Export the transaction history in CSV format from the beginning or at least from when you first acquired the shares you held during the tax year.
+   - Note: Schwab allows downloads for only the last 4 years, so keep it safe. After 4 years, you may need to restore transactions from PDF statements.
+   - [Example CSV](https://github.com/KapJI/capital-gains-calculator/blob/main/tests/test_data/schwab_transactions.csv).
 
-    You will need the "All Trades" and "Taxable Income" reports since the beginning.
-    Make sure to select "Since Inception" for the period, and "Not Grouping".
-    Export both reports to Excel or Google Sheets, save as CSV, and place them in the same folder.
+2. **Exported transaction history from Schwab Equity Awards**:
+   - Export the transaction history from Schwab Equity Awards (e.g., for Alphabet/Google employees) in JSON format.
+   - Instructions for this are available at the top of the [parser file](https://github.com/KapJI/capital-gains-calculator/blob/main/cgt_calc/parsers/schwab_equity_award_json.py).
+   - Schwab now allows for the whole history of Equity Awards account transactions to be downloaded.
 
-    Sharesight aggregates transactions from multiple brokers, but doesn't necessarily have balance information.
-    Use the `--no-balance-check` flag to avoid spurious errors.
+### Trading 212
 
-    Since there is no direct support for equity grants, add `Stock Activity` as part of the comment associated with any vesting transactions - making sure they have the grant price filled.
+- **Exported transaction history from Trading 212**:
+   - You can use several files as Trading 212 limits statements to 1-year periods.
+   - [Example Files](https://github.com/KapJI/capital-gains-calculator/tree/main/tests/test_data/trading212).
 
-    [See example](https://github.com/KapJI/capital-gains-calculator/tree/main/tests/test_data/sharesight).
+### Morgan Stanley
 
--   CSV file with initial stock prices in USD at the moment of vesting, split, etc.
-    [`initial_prices.csv`](https://github.com/KapJI/capital-gains-calculator/blob/main/cgt_calc/resources/initial_prices.csv) comes pre-packaged, you need to use the same format.
--   (Optional) Monthly exchange rates prices from [gov.uk](https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat).
-    `exchange_rates.csv` gets generated automatically using HMRC API, you need to use the same format if you want to override it.
+- **Exported transaction history from Morgan Stanley**:
+   - Specify the directory produced from the report download page, as Morgan Stanley generates multiple files in a single report.
 
-Then run (you can omit the brokers you don't use):
+### Sharesight
+
+- **Exported transaction history from Sharesight**:
+   - Export the "All Trades" report and also optionally, the 'Taxable Income' report where applicable (if you have no dividends, distributions or interest payments received, the 'Taxable Income' report cannot be generated)
+   - Select "Since Inception" for the date range period and "Do not group" for the 'Group by' option.
+   - Download the report(s) as Excel (`.XLSX`) files or export to Google Sheets, convert to CSV, and place them in the same folder.
+   - Sharesight aggregates transactions from multiple brokers but doesn't necessarily have balance information, so use the `--no-balance-check` flag to avoid errors.
+   - For equity grants, add `Stock Activity` in the comment associated with any vesting transactions, ensuring the grant price is filled.
+   - [Example Files](https://github.com/KapJI/capital-gains-calculator/tree/main/tests/test_data/sharesight).
+
+### Initial Stock Prices
+
+- **CSV file with initial stock prices in USD**:
+   - The `initial_prices.csv` comes pre-packaged. Use the same format.
+   - [Initial Prices CSV](https://github.com/KapJI/capital-gains-calculator/blob/main/cgt_calc/resources/initial_prices.csv).
+
+### Exchange Rates
+
+- **Monthly exchange rates prices from [gov.uk](https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat)**:
+   - `exchange_rates.csv` gets generated automatically using HMRC API, but you can override it using the same format.
+
+### Running the Calculation
 
 ```shell
 cgt-calc --year 2020 --schwab schwab_transactions.csv --trading212 trading212/ --mssb mmsb_report/
-```
 
-See `cgt-calc --help` for the full list of settings.
 
 ## Disclaimer
 
-Please be aware that I'm not a tax adviser so use this data at your own risk.
+The output of this tool has been prepared for informational purposes only, and is not intended to provide, and should not be relied on for, tax, legal or accounting advice. The calculations produced are for illustrative purposes only and do not constitute tax advice or recommendations in any jurisdiction.
+
+The maintainers of this tool do not accept responsibility for any errors.
 
 ## Contribute
 
