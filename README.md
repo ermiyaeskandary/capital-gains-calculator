@@ -119,7 +119,7 @@ and when you're done, simply exit the shell. You will be dropped back into the s
 
 ```shell
 cgt-calc --year 2020 --schwab schwab_transactions.csv --trading212 trading212/ --mssb mmsb_report/
-
+```
 
 ## Disclaimer
 
