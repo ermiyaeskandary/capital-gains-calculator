@@ -104,7 +104,7 @@ and when you're done, simply exit the shell. You will be dropped back into the s
    - For equity grants, add `Stock Activity` in the comment associated with any vesting transactions, ensuring the grant price is filled.
    - [Example Files](https://github.com/KapJI/capital-gains-calculator/tree/main/tests/test_data/sharesight).
 
-### Initial Stock Prices
+### Generic
 
 - **CSV file with initial stock prices in USD**:
    - The `initial_prices.csv` comes pre-packaged. Use the same format.
